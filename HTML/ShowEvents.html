@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+a {
+  padding 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+</style>
+<script>
+   function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true") {
+      document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+    }
+
+    var email = sessionStorage.getItem("email");
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', 'http://localhost:8080/demo/event/all',false);
+    ajax.send();
+    var jsonFile = JSON.parse(ajax.responseText);
+    if (jsonFile.length== 0) {
+      var ul = document.getElementById("eventsList");
+      var li = document.createElement("li");
+      li.innerHTML = "No Events Created"
+      ul.appendChild(li);
+    }
+    else {
+      for (var x = 0; x < jsonFile.length; x++) {
+
+        var ul = document.createElement("ul");
+        var li = document.createElement("li");
+        var date = new Date(jsonFile[x].eventDate);
+        var dateToday = new Date();
+        li.innerHTML = "Date - "  + date.getMonth() + "/" + date.getDate() + "/"  + date.getFullYear();
+        var lii = document.createElement("li");
+        lii.innerHTML = "Event Name - " + jsonFile[x].name;
+        var liii = document.createElement("li");
+        liii.innerHTML = "Capacity - " + jsonFile[x].capacity;
+        var lo = document.createElement("li");
+        lo.innerHTML = "Seats Left - " + jsonFile[x].seatsLeft;
+        var loo = document.createElement("li");
+        loo.innerHTML = "Location - " + jsonFile[x].location;
+        var looo = document.createElement("li");
+        looo.innerHTML = "Cost - $" + jsonFile[x].cost;
+        var liiii = document.createElement("li");
+        var liiiii = document.createElement("li");
+        liiiii.innerHTML = "Promo Code - " + jsonFile[x].promoCode;
+        var button = document.createElement("button");
+        button.innerHTML = "Edit Event";
+        button.setAttribute("id", x);
+        button.onclick = function() {
+        	  sessionStorage.setItem("eventNameEdit", jsonFile[this.id].name);
+              sessionStorage.setItem("eventDateEdit", jsonFile[this.id].eventDate);
+              sessionStorage.setItem("eventCapacityEdit", jsonFile[this.id].capacity);
+              sessionStorage.setItem("eventSeatsLeftEdit", jsonFile[this.id].seatsLeft);
+              sessionStorage.setItem("eventLocationEdit", jsonFile[this.id].location);
+              sessionStorage.setItem("eventCostEdit", jsonFile[this.id].cost);
+              sessionStorage.setItem("eventPromoCode", jsonFile[this.id].cost);
+              window.location.href = 'EditEvent.html';
+        }
+        liiii.innerHTML = "---------------------------------";
+        ul.appendChild(li);
+        ul.appendChild(lii);
+        ul.appendChild(liii);
+		ul.appendChild(lo);
+        ul.appendChild(loo);
+        ul.appendChild(looo);
+        ul.appendChild(liiiii);
+        ul.appendChild(button);
+        ul.appendChild(liiii);
+        if (date.getTime() >= dateToday.getTime()){
+			document.getElementById("eventsList").appendChild(ul);
+        }
+        else {
+        	document.getElementById("eventsListPast").appendChild(ul);
+        }
+        
+
+
+
+      }
+    }
+  }
+</script>
+<body class="w3-content" style="max-width:1200px" onload="setUp()">
+
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+      <p class="w3-left">
+      <a href="ShowEvents.html">Show Events</a>
+      <a href="CreateEvent.html">Create Event</a>
+      <a href="EventsByLocation.html">Event Venue History</a>
+    </p>
+      <p class="w3-right">
+        <a href="signin.html" id="signIn">Sign In</a>
+      </p>
+    </header>
+
+
+
+    <!-- Subscribe section -->
+    <div class="w3-container w3-black w3-padding-32">
+      <h1>Events to Come List</h1>
+       <ul id="eventsList">
+       </ul>
+        <h1>Events Past List</h1>
+       <ul id="eventsListPast">
+       </ul>
+      </div>
+
+
+
+
+</body>
+</html>

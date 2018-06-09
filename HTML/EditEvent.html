@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+a {
+  padding: 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+</style>
+<script>
+
+  function makeEvent() {
+    var eventLocation = document.getElementById("eventLocation").value;
+    var eventDate = document.getElementById("eventDate").value;
+    var eventCapacity = document.getElementById("eventCapacity").value;
+    var eventCost = document.getElementById("eventCost").value;
+    var promoCode = document.getElementById("promoCode").value;
+    var dateReg = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    var capacityReg = /\d+/;
+    var costReg = /\d+\.[0-9]{2}/;
+   	var date = new Date(eventDate);
+    var todayDate = new Date();
+    if (dateReg.test(eventDate) && date.getTime() > todayDate.getTime()) {
+      if(capacityReg.test(eventCapacity) && eventCapacity < 2147483647 && eventCapacity > (sessionStorage.getItem("eventCapacityEdit") -  sessionStorage.getItem("eventSeatsLeftEdit"))) {
+        if(costReg.test(eventCost)){
+        var date = new Date(eventDate);
+        var dateString = date.getTime();
+        var ajax = new XMLHttpRequest();
+        ajax.open('GET', 'http://localhost:8080/demo/event/add?eventName=' + sessionStorage.getItem("eventNameEdit") + '&capacity='+ eventCapacity+ '&date=' + dateString+ '&price=' + eventCost+ '&location=' + eventLocation+ '&promoCode=' + promoCode,false);
+        ajax.send();
+        alert(ajax.responseText);
+        document.getElementById("eventName").value = "";
+        document.getElementById("eventLocation").value = "";
+        document.getElementById("eventDate").value = "";
+        document.getElementById("eventCapacity").value = "";
+        document.getElementById("eventCost").value = "";
+      }else alert("Enter a valid cost");
+      }else alert("Invalid Capacity please enter a number below 2147483647");
+    }else alert("Invalid Date Format mm/dd/yyyy");
+  }
+  function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true") {
+      
+    }
+    var num = sessionStorage.getItem("eventDateEdit");
+    var editDate = new Date(parseInt(num));
+    alert(sessionStorage.getItem("eventDateEdit"));
+    var dateFormat = editDate.getDate() + "/" + editDate.getMonth() + "/" + editDate.getFullYear()
+    document.getElementById("eventName").innerHTML = sessionStorage.getItem("eventNameEdit");
+    document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+      document.getElementById("eventLocation").value = sessionStorage.getItem("eventLocationEdit");
+      document.getElementById("eventDate").value = dateFormat
+      document.getElementById("eventCapacity").value = sessionStorage.getItem("eventCapacityEdit");
+      document.getElementById("eventCost").value = sessionStorage.getItem("eventCostEdit");
+      document,getElementById("promoCode").value  = sessionStorage.getItem("eventPromoCode");
+  }
+</script>
+<body class="w3-content" style="max-width:1200px" onload="setUp()">
+
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+     <p class="w3-left">
+      <a href="ShowEvents.html">Show Events</a>
+      <a href="CreateEvent.html">Create Event</a>
+      <a href="EventsByLocation.html">Event Venue History</a>
+    </p>
+    <p class="w3-right">
+      <a href="signin.html" id="signIn">Sign In</a>
+    </p>
+  </header>
+
+
+
+  <!-- Subscribe section -->
+  <div class="w3-container w3-black w3-padding-32">
+    <h1>Edit Event</h1></p>
+    <p id="eventName"></p>
+    <p><input class="w3-input w3-border" type="text" placeholder="Enter Event Location" style="width:100%" id="eventLocation"></p>
+    <p><input class="w3-input w3-border" type="text" placeholder="Enter Event Date" style="width:100%" id="eventDate"></p>
+    <p><input class="w3-input w3-border" type="text" placeholder="Enter Capacity" style="width:100%" id="eventCapacity"></p>
+    <p><input class="w3-input w3-border" type="text" placeholder="Enter Cost" style="width:100%" id="eventCost"></p>
+    <p><input class="w3-input w3-border" type="text" placeholder="Promo Code" style="width:100%" id="promoCode"></p>
+    <button type="button" class="w3-button w3-red w3-margin-bottom" onclick="makeEvent()">Sign Up</button>
+  </div>
+
+
+
+  
+
+</body>
+</html>

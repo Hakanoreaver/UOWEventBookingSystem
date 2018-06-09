@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+a {
+  padding 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+</style>
+<script>
+  function addUser() {
+    var name = document.getElementById("name").value;
+      var password = document.getElementById("pw1").value;
+      var secondPassword = document.getElementById("pw2").value;
+      if (password == secondPassword) {
+        var ajax = new XMLHttpRequest();
+        ajax.open('GET', 'http://localhost:8080/demo/user/edit?name='+name+'&email='+sessionStorage.getItem("email")+'&password='+password+'&admin=false',false);
+        ajax.send();
+        alert(ajax.responseText);
+      }
+      else alert("Passwords not matched");
+  }
+
+  function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true") {
+      document.getElementById("userEmail").innerHTML = "Email - " + sessionStorage.getItem("email");
+      document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+      document.getElementById("name").value = sessionStorage.getItem("name");
+    document.getElementById("pw1").value = sessionStorage.getItem("password");
+    document.getElementById("pw2").value = sessionStorage.getItem("password");
+    }
+  }
+</script>
+<body class="w3-content" style="max-width:1200px" onload="setUp()">
+
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+     <p class="w3-left" id="links">
+      <a href="Bookings.html">Bookings</a>
+      <a href="Browse.html">Browse</a>
+      <a href="SignUp.html">Sign Up</a>
+    </p>
+    <p class="w3-right">
+      <a href="EditUser.html">Edit Account</a>
+      <a href="signin.html" id="signIn">Sign In</a>
+    </p>
+  </header>
+
+
+
+  <!-- Subscribe section -->
+  <div class="w3-container w3-black w3-padding-32">
+    <h1>Edit User</h1></p>
+    <p id="userEmail"></p>
+    <p>Name<input class="w3-input w3-border" type="text" placeholder="Enter Name" style="width:100%" id="name"></p>
+    <p>Pasword<input class="w3-input w3-border" type="password" placeholder="Enter Password" style="width:100%" id="pw1"></p>
+    <p>Re-Enter Password<input class="w3-input w3-border" type="password" placeholder="Enter Password Again" style="width:100%" id="pw2"></p>
+    <button type="button" class="w3-button w3-red w3-margin-bottom" onclick="addUser()">Edit User Details</button>
+  </div>
+
+</body>
+</html>

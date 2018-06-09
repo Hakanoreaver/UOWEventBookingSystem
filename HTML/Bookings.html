@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+a {
+  padding 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+</style>
+<script>
+   function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true") {
+      document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+    }
+
+    var email = sessionStorage.getItem("email");
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', 'http://localhost:8080/demo/booking/search?Email='+email,false);
+    ajax.send();
+    var jsonFile = JSON.parse(ajax.responseText);
+    if (jsonFile.length== 0) {
+      var ul = document.getElementById("eventsList");
+      var li = document.createElement("li");
+      li.innerHTML = "Looks like you havent booked any events yet!"
+      ul.appendChild(li);
+    }
+    else {
+      for (var x = 0; x < jsonFile.length; x++) {
+        var ajax = new XMLHttpRequest();
+
+    ajax.open('GET', 'http://localhost:8080/demo/event/search?eventName='+jsonFile[x].name,false);
+    ajax.send();
+    var jsonFile2 = JSON.parse(ajax.responseText);
+        var ul = document.createElement("ul");
+        var li = document.createElement("li");
+        var d = new Date(parseInt(jsonFile2.eventDate))
+        li.innerHTML = "Date - " + d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();;
+        var lii = document.createElement("li");
+        lii.innerHTML = "Event Name - " + jsonFile2.name;
+        var liii = document.createElement("li");
+        liii.innerHTML = "Seat No - " + (parseInt(jsonFile[x].seatNumber) + 1);
+        var liiii = document.createElement("li");
+        var but = document.createElement("button");
+        but.setAttribute("id", jsonFile[x].id);
+        but.innerHTML = "Delete";
+        but.onclick = function() {
+          var ajax2 = new XMLHttpRequest();
+          ajax2.open('GET', 'http://localhost:8080/demo/booking/delete?id=' + this.id);
+          ajax2.send();
+        }
+        liiii.innerHTML = "---------------------------------";
+        ul.appendChild(li);                                     
+        ul.appendChild(lii);
+        ul.appendChild(liii);
+        ul.appendChild(liiii);
+        ul.appendChild(but);
+        document.getElementById("eventsList").appendChild(ul);
+
+
+
+      }
+    }
+  }
+</script>
+<body class="w3-content" style="max-width:1200px" onload="setUp()">
+
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+     <p class="w3-left">
+      <a href="Bookings.html">Bookings</a>
+      <a href="Browse.html">Browse</a>
+      <a href="SignUp.html">Sign Up</a>
+
+    </p>
+      <p class="w3-right">
+        <a href="EditUser.html">Edit Account</a>
+        <a href="signin.html" id="signIn">Sign In</a>
+      </p>
+    </header>
+
+
+
+    <!-- Subscribe section -->
+    <div class="w3-container w3-black w3-padding-32">
+      <h1>Your Bookings</h1>
+       <ul id="eventsList">
+       </ul>
+      </div>
+
+</body>
+</html>

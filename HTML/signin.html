@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+a {
+  padding 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+</style>
+<script>
+  function logIn() {
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', 'http://localhost:8080/demo/user/logIn?password='+password+"&email="+email,false);
+    ajax.send();
+    if (ajax.responseText != null) {
+      try {
+      var jsonFile = JSON.parse(ajax.responseText);
+    var name = jsonFile.name;
+    var state = "true";
+    sessionStorage.setItem("name", name);
+    sessionStorage.setItem("email", email);
+    sessionStorage.setItem("password", password);
+    sessionStorage.setItem("logged", "true");
+    sessionStorage.setItem("admin", jsonFile.admin);
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("signIn").innerHTML = name;
+    if(jsonFile.admin == "true") {
+        window.location.href = 'CreateEvent.html';
+      }
+    
+    }
+    catch (e) {
+        alert("Wrong password or email");
+      }
+    }
+    else window.location.href = 'Browse.html';
+   
+}
+
+function logOut(){
+    sessionStorage.setItem("name", "");
+    sessionStorage.setItem("email", "");
+    sessionStorage.setItem("password", "");
+    sessionStorage.setItem("logged", "false");
+    sessionStorage.setItem("admin", "false");
+    window.location.href = 'signin.html';
+}
+  function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true" && sessionStorage.getItem("admin") == "true") {
+      document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+      var  p = document.getElementById("links");
+      while(p.firstChild) p.removeChild(p.firstChild);
+      var a1 = document.createElement("a");
+      var a2 = document.createElement("a");
+      var a3 = document.createElement("a");
+      a2.href = "ShowEvents.html";
+      a2.innerHTML = "Show Events  ";
+      a2.style.textDecoration = "none";
+      p.appendChild(a2);
+      a1.href = "CreateEvent.html";
+      a1.innerHTML = "Create Event ";
+      a1.style.textDecoration = "none";
+      p.appendChild(a1);
+      
+    }
+    else document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+
+
+    }
+
+  
+</script>
+<body class="w3-content" style="max-width:1200px" onload="setUp()">
+
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge" >
+      <p class="w3-left" id="links">
+      <a href="Bookings.html">Bookings</a>
+      <a href="Browse.html">Browse</a>
+      <a href="SignUp.html">Sign Up</a>
+    </p>
+      <p class="w3-right">
+        <a href="signin.html" id="signIn">Sign In</a>
+      </p>
+    </header>
+
+
+
+    <!-- Subscribe section -->
+    <div class="w3-container w3-black w3-padding-32">
+      <h1>Sign in to UOW Events</h1>
+      <p><input class="w3-input w3-border" type="text" placeholder="Enter e-mail" style="width:100%" id="email"></p>
+      <p><input class="w3-input w3-border" type="password" placeholder="Enter Password" style="width:100%" id="password" ></p>
+      <button type="button" class="w3-button w3-red w3-margin-bottom" onclick="logIn()">Sign In</button>
+       <button type="button" class="w3-button w3-red w3-right" onclick="logOut()">Sign Out</button>
+    </div>
+
+</body>
+</html>

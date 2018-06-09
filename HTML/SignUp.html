@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+a {
+  padding 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+</style>
+<script>
+  function addUser() {
+    var name = document.getElementById("name").value;
+    var email = document.getElementById("email").value;
+    var patt = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    var res = patt.test(email);
+    if(res) {
+      var password = document.getElementById("password").value;
+      var secondPassword = document.getElementById("secondPassword").value;
+      if (password == secondPassword) {
+        var ajax = new XMLHttpRequest();
+        ajax.open('GET', 'http://localhost:8080/demo/user/add?name='+name+'&email='+email+'&password='+password+'&admin=false',false);
+        ajax.send();
+        alert(ajax.responseText);
+      }
+      else alert("Passwords not matched");
+    }
+    else alert("Please enter a valid email")
+  }
+
+   function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true") {
+      document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+    }
+  }
+</script>
+<body class="w3-content" style="max-width:1200px" onload="setUp()">
+
+  <!-- Sidebar/menu -->
+
+
+  <!-- Top menu on small screens -->
+  <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <div class="w3-bar-item w3-padding-24 w3-wide">LOGO</div>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+  </header>
+
+  <!-- Overlay effect when opening sidebar on small screens -->
+  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+  <!-- !PAGE CONTENT! -->
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+     <p class="w3-left">
+      <a href="Bookings.html">Bookings</a>
+      <a href="Browse.html">Browse</a>
+      <a href="SignUp.html">Sign Up</a>
+    </p>
+      <p class="w3-right">
+        <a href="EditUser.html">Edit Account</a>
+        <a href="signin.html" id="signIn">Sign In</a>
+      </p>
+    </header>
+
+
+
+    <!-- Subscribe section -->
+    <div class="w3-container w3-black w3-padding-32">
+      <h1>Sign up to UOW Events</h1>
+      <p>To get updates on all new events at UOW</p>
+      <p>Name<input class="w3-input w3-border" type="text" placeholder="Enter Name" style="width:100%" id="name"></p>
+      <p>Email<input class="w3-input w3-border" type="text" placeholder="Enter e-mail" style="width:100%" id="email"></p>
+        <p>Password<input class="w3-input w3-border" type="password" placeholder="Enter Password" style="width:100%" id="password""></p>
+        <p>Re-Enter Password<input class="w3-input w3-border" type="password" placeholder="Re-Enter Password" style="width:100%" id="secondPassword" ></p>
+        <button type="button" class="w3-button w3-red w3-margin-bottom" onclick="addUser()">Sign Up</button>
+      </div>
+
+</body>
+</html>

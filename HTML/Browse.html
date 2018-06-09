@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<title>Browse</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script>
+  function dateClicked(clicked) {
+    alert("clcicked");
+  }
+</script>
+<script>
+  var month;
+  var year;
+  var today = new Date();
+  var monthNames = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+  var lengths = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+  var jsonFile;
+
+  function generateDays(change) {
+
+
+    var ul = document.getElementById("dayUL");
+    while(ul.firstChild) ul.removeChild(ul.firstChild);
+    month += change;
+    if (month == 12) {
+      month = 0;
+      year += 1;
+    }
+    if (month == -1) {
+      month = 11;
+      year -= 1;
+    }
+    
+    var ajax = new XMLHttpRequest();
+
+    ajax.open('GET', 'http://localhost:8080/demo/event/byDate?month=' + month + "&year=" + year,false);
+    ajax.send();
+
+    try {
+      jsonFile = JSON.parse(ajax.responseText);
+
+      var d = new Date(jsonFile[0].eventDate);
+
+      today = new Date(year, month, 1);
+    }
+    catch(err){
+
+    }
+
+    var day = today.getDay();
+    document.getElementById("monthName").innerHTML = monthNames[month];
+    document.getElementById("yearSpan").innerHTML = year;
+    for(var i = 0; i < day; i ++) {
+      var newLI = document.createElement("li");
+      document.getElementById("dayUL").appendChild(newLI); 
+    }
+    
+    for(var i = 0; i < lengths[month]; i++) {
+      var newLI = document.createElement("li");
+      newLI.innerHTML= i+1;
+      newLI.Att
+      document.getElementById("dayUL").appendChild(newLI);
+    }
+    let dayUL = document.getElementById("dayUL");
+    let listItem = dayUL.getElementsByTagName("li");
+    try {
+      for (var z = 0; z < listItem.length; z++) {
+        try{throw z}
+        catch(zz) {
+          for (var x=0; x<jsonFile.length; x++) {
+            try{throw x}
+            catch(xx) {
+              var tempDate = new Date(jsonFile[xx].eventDate);
+              try{throw tempDate}
+              catch(tempDatee) {
+              if (tempDatee.getDate() == listItem[zz].innerHTML) {
+                try{throw listItem[zz]}
+                catch(parse) {
+                  changeColour(listItem[zz]);
+                }
+              }
+            }
+            }
+          }
+        }
+      }
+    }
+    catch(err) {
+
+    }
+  }
+  function changeColour(liElement) {
+    try{throw liElement}
+    catch(temp) {
+      temp.style.background = "#282828";
+      temp.onclick = function() {
+      var ul = document.getElementById("eventTime");
+       while(ul.firstChild) ul.removeChild(ul.firstChild);
+       var listElement = document.createElement("li");
+       var startText = document.createElement("h1");
+       if (jsonFile.length > 1)
+       startText.innerHTML = "Event";
+       else  startText.innerHTML = "Events";
+        listElement.appendChild(startText);
+        for (var i = 0; i < jsonFile.length; i++) {
+          var d = new Date(jsonFile[i].eventDate);
+          var x = this.innerHTML;
+          if (x == d.getDate()){
+            var div = document.createElement("div");
+            var eventName = document.createElement("p");
+            var eventDate = document.createElement("p");
+            var seatsLeft = document.createElement("p");
+            var button = document.createElement("button");
+            button.innerHTML = "Book";
+            eventName.innerHTML = "Event Name - " + jsonFile[i].name;
+            var d = new Date(parseInt(jsonFile[i].eventDate));
+            eventDate.innerHTML = "Event Date - " + d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+            seatsLeft.innerHTML = "Seats Remaining - " + jsonFile[i].seatsLeft;
+            button.setAttribute("id", i);
+            button.onclick = function() {
+              sessionStorage.setItem("eventName", jsonFile[this.id].name);
+              sessionStorage.setItem("eventDate", jsonFile[this.id].eventDate);
+              sessionStorage.setItem("seatsLeft", jsonFile[this.id].seatsLeft);
+              sessionStorage.setItem("seatCapacity", jsonFile[this.id].capacity);
+              window.location.href = 'Book.html';
+            }
+            div.appendChild(eventName);
+            div.appendChild(eventDate);
+            div.appendChild(seatsLeft);
+            div.appendChild(button);
+            listElement.appendChild(div);
+          }
+        }
+        document.getElementById("eventTime").appendChild(listElement);
+      }
+    }
+  }
+  function firstLoad() {
+    setUp();
+    month = today.getMonth();
+    year =  today.getFullYear();
+    document.getElementById("monthName").innerHTML = monthNames[month];
+    document.getElementById("yearSpan").innerHTML = year;
+    generateDays(0);
+  }
+
+  function setUp() {
+    var loggedIn = sessionStorage.getItem("logged");
+    if (loggedIn == "true") {
+      document.getElementById("signIn").innerHTML = sessionStorage.getItem("name");
+    }
+  }
+</script>
+<style>
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+
+a {
+  padding 40px;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+}
+
+/* Month header */
+.month {
+  padding: 70px 25px;
+  width: 100%;
+  background: #282828;
+  text-align: center;
+}
+
+/* Month list */
+.month ul {
+  margin: 0;
+  padding: 0;
+}
+
+.month ul li {
+  color: white;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+/* Previous button inside month header */
+.month .prev {
+  float: left;
+  padding-top: 10px;
+}
+
+/* Next button */
+.month .next {
+  float: right;
+  padding-top: 10px;
+}
+
+/* Weekdays (Mon-Sun) */
+.weekdays {
+  margin: 0;
+  padding: 10px 0;
+  background-color:#ddd;
+}
+
+.weekdays li {
+  display: inline-block;
+  width: 13.6%;
+  color: #666;
+  text-align: center;
+}
+
+/* Days (1-31) */
+.days {
+  padding: 10px 0;
+  background: #eee;
+  margin: 0;
+}
+
+.days li {
+  list-style-type: none;
+  display: inline-block;
+  width: 13.6%;
+  text-align: center;
+  margin-bottom: 5px;
+  font-size:12px;
+  color: #777;
+}
+
+/* Highlight the "current" day */
+.days li .active {
+  padding: 5px;
+  background: #282828;
+  color: white !important
+}
+</style>
+<body class="w3-content" style="max-width:1200px" onload="firstLoad()">
+
+ 
+  <div class="w3-main">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+      <p class="w3-left">
+      <a href="Bookings.html">Bookings</a>
+      <a href="Browse.html">Browse</a>
+      <a href="SignUp.html">Sign Up</a>
+    </p>
+      <p class="w3-right">
+        <a href="EditUser.html">Edit Account</a>
+        <a href="signin.html" id="signIn">Sign In</a>
+      </p>
+    </header>
+
+    <div class="w3-container w3-black w3-padding-32">
+      <h1>Browse Events</h1>
+      <div class="month"> 
+        <ul>
+          <li class="prev" onclick="generateDays(-1)">&#10094;</li>
+          <li class="next" onclick="generateDays(1)">&#10095;</li>
+          <li ><span id="monthName">August</span><br><span style="font-size:18px" id="yearSpan">2017</span></li>
+        </ul>
+      </div>
+
+      <ul class="weekdays">
+        <li>Su</li>
+        <li>Mo</li>
+        <li>Tu</li>
+        <li>We</li>
+        <li>Th</li>
+        <li>Fr</li>
+        <li>Sa</li>  
+      </ul>
+
+      <ul class="days" id="dayUL"> 
+
+      </ul>
+    </div>
+     <div class="w3-container w3-black w3-padding-32">
+      <ul id="eventTime">
+      </ul>
+     </div>
+
+    <!-- Footer -->
+
+
+
+    <!-- End page content -->
+  </div>
+
+
+</body>
+</html>

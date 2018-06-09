@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script>
+		function functionName() {
+
+			var ID = document.getElementById("UserCode").value;
+			var ajax = new XMLHttpRequest();
+
+			ajax.open('GET', 'http://localhost:8080/demo/booking/search?UserCode=' + ID,false);
+			ajax.send();
+
+			var jsonFile = JSON.parse(ajax.responseText);
+
+
+				var ul = document.getElementById("result");
+				while(ul.firstChild) ul.removeChild(ul.firstChild);
+
+				for (var i=0; i<jsonFile.length; i++) {
+					var liii=document.createElement("li");
+					liii.innerHTML= "Event Name : " + jsonFile[i].name;
+					document.getElementById("result").appendChild(liii);
+					var lii=document.createElement("li");
+					lii.innerHTML= "Seat Number : " + jsonFile[i].seatNumber;
+					document.getElementById("result").appendChild(lii);
+				}
+
+				if(!ul.firstChild) {
+					var liii=document.createElement("li");
+					liii.innerHTML= "No Event Tickets Booked";
+					document.getElementById("result").appendChild(liii);
+				}
+			}
+		
+	</script>
+	<script>
+		function showEvents() {
+			var ajax = new XMLHttpRequest();
+			ajax.open('GET', 'http://localhost:8080/demo/event/all',false);
+			ajax.send();
+
+			var jsonFile = JSON.parse(ajax.responseText);
+			alert(jsonFile[1].name);
+			
+			for (var i=0; i<jsonFile.length; i++) {
+				var check = jsonFile[i].seatsLeft;
+				if (check > 0) {
+					var content = document.createElement("option");
+					content.text = jsonFile[i].name;
+					content.value = jsonFile[i].name;
+					document.getElementById("eventSelector").appendChild(content);
+				}
+			}
+		}
+	</script>
+</head>
+<body onload="showEvents()">
+ <div>
+ 	<ul id="result" style="list-style-type: none; margin-bottom: 20px; margin-top: 50px">
+ 	</ul>
+ 	<input type="text" id="UserCode" placeholder="User Code" style="margin-left: 40px">
+ 	<button onclick="functionName()" >Search</button>
+ </div>
+ 	<h3 style="margin-left: 40px; margin-bottom: 0">List of Events</h3>
+ 	<select id="eventSelector" style="margin: 40px">
+ 		
+ 	</select>
+ <div>
+ 	
+ </div>
+</body>
+</html>
